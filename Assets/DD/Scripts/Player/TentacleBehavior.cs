@@ -60,6 +60,7 @@ public class TentacleBehavior : MonoBehaviour
         }
         else if (state == TentacleState.throwing)
         {
+            transform.position = _player.tentaclePoint.transform.position;
             holding = null;
             state = TentacleState.idle;
         }
@@ -71,12 +72,23 @@ public class TentacleBehavior : MonoBehaviour
         {
             state = TentacleState.grabbing;
             target = _player._aim;
-            //target too far
+            if (Vector3.Distance(target, _player.tentaclePoint.transform.position) > maxRange)
+            {
+                Vector3 direction = target - _player.tentaclePoint.transform.position;
+                direction.Normalize();
+                direction *= maxRange;
+                target = _player.tentaclePoint.transform.position + direction;
+            }
         }
         else if (state == TentacleState.holding)
         {
             state = TentacleState.throwing;
             target = _player._aim;
+            Rigidbody rigBod = holding.GetComponent<Rigidbody>();
+            rigBod.isKinematic = false;
+            Vector3 direction = transform.position - _player.tentaclePoint.transform.position;
+            direction.Normalize();
+            rigBod.velocity = rigBod.position + direction;
         }
     }
 

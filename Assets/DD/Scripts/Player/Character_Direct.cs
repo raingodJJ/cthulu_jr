@@ -7,7 +7,8 @@ public enum TentacleState
     idle,
     grabbing,
     holding,
-    throwing
+    throwing,
+    cooldown
 }
 
 [RequireComponent(typeof(CharacterController))]

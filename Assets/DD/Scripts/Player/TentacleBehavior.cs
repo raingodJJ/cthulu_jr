@@ -14,6 +14,8 @@ public class TentacleBehavior : MonoBehaviour
     public GameObject holding;
     private int grabCounter = 0;
     public int grabDuration;
+    private int cooldownCounter = 0;
+    public int cooldown;
 
     // Use this for initialization
     void Start ()
@@ -24,9 +26,9 @@ public class TentacleBehavior : MonoBehaviour
 	// Update is called once per frame
 	void Update ()
     {
-		if (state == TentacleState.grabbing)
+        if (state == TentacleState.grabbing)
         {
-            if (grabCounter != grabDuration/2)
+            if (grabCounter != grabDuration / 2)
             {
                 velocity = target - transform.position;
                 Vector3 pos;
@@ -42,7 +44,7 @@ public class TentacleBehavior : MonoBehaviour
                     state = TentacleState.idle;
                 }
             }
-            else if (grabCounter == grabDuration/2)
+            else if (grabCounter == grabDuration / 2)
             {
                 target = _player.tentaclePoint.transform.position;
                 grabCounter++;
@@ -62,7 +64,19 @@ public class TentacleBehavior : MonoBehaviour
         {
             transform.position = _player.tentaclePoint.transform.position;
             holding = null;
-            state = TentacleState.idle;
+            state = TentacleState.cooldown;
+        }
+        else if (state == TentacleState.cooldown)
+        {
+            if (cooldownCounter < cooldown)
+            {
+                cooldownCounter++;
+            }
+            else
+            {
+                cooldownCounter = 0;
+                state = TentacleState.idle;
+            }
         }
 	}
 

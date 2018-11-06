@@ -5,6 +5,7 @@ using UnityEngine;
 public class TentacleBehavior : MonoBehaviour
 {
     public float maxRange;
+    private float minRange;
     public float maxSpeed;
     public GameObject player;
     private Character_Direct _player;
@@ -16,21 +17,22 @@ public class TentacleBehavior : MonoBehaviour
     public int grabDuration;
     private int cooldownCounter = 0;
     public int cooldown;
+    private int throwDelayCounter = 0;
 
     // Use this for initialization
-    void Start ()
+    void Start()
     {
         _player = player.GetComponent<Character_Direct>();
     }
-	
-	// Update is called once per frame
-	void Update ()
+
+    // Update is called once per frame
+    void Update()
     {
         if (state == TentacleState.grabbing)
         {
             if (grabCounter != grabDuration / 2)
             {
-                velocity = target - transform.position;
+                velocity = GetDirection(target, transform.position, 0);
                 Vector3 pos;
                 pos.x = transform.position.x + velocity.x * Time.deltaTime * 11;
                 pos.y = transform.position.y;
@@ -52,13 +54,28 @@ public class TentacleBehavior : MonoBehaviour
         }
         else if (state == TentacleState.holding)
         {
-            holding.transform.position = this.transform.position;
-            velocity = _player._aim - transform.position;
+            target = _player._aim;
+            //If to far
+            if (Vector3.Distance(target, _player.tentaclePoint.transform.position) > maxRange)
+            {
+                //Max range
+                Vector3 direction = GetDirection(target, _player.tentaclePoint.transform.position, maxRange);
+                target = _player.tentaclePoint.transform.position + direction;
+            }
+            //If to close
+            else if (Vector3.Distance(target, _player.tentaclePoint.transform.position) < 1)
+            {
+                //Min Range 1
+                Vector3 direction = GetDirection(target, _player.tentaclePoint.transform.position, 1);
+                target = _player.tentaclePoint.transform.position + direction;
+            }
+            velocity = GetDirection(target, this.transform.position, maxSpeed);
             Vector3 pos;
-            pos.x = transform.position.x + velocity.x * Time.deltaTime * 11;
+            pos.x = transform.position.x + velocity.x * Time.deltaTime*1;
             pos.y = transform.position.y;
-            pos.z = transform.position.z + velocity.z * Time.deltaTime * 11;
+            pos.z = transform.position.z + velocity.z * Time.deltaTime*1;
             transform.position = pos;
+            holding.transform.position = this.transform.position;
         }
         else if (state == TentacleState.throwing)
         {
@@ -78,7 +95,7 @@ public class TentacleBehavior : MonoBehaviour
                 state = TentacleState.idle;
             }
         }
-	}
+    }
 
     void Fire()
     {
@@ -93,6 +110,12 @@ public class TentacleBehavior : MonoBehaviour
                 direction *= maxRange;
                 target = _player.tentaclePoint.transform.position + direction;
             }
+            else if (Vector3.Distance(target, _player.tentaclePoint.transform.position) < minRange)
+            {
+                Vector3 direction = target - _player.tentaclePoint.transform.position;
+                direction.Normalize();
+                target = _player.tentaclePoint.transform.position + direction;
+            }
         }
         else if (state == TentacleState.holding)
         {
@@ -100,8 +123,7 @@ public class TentacleBehavior : MonoBehaviour
             target = _player._aim;
             Rigidbody rigBod = holding.GetComponent<Rigidbody>();
             rigBod.isKinematic = false;
-            Vector3 direction = transform.position - _player.tentaclePoint.transform.position;
-            direction.Normalize();
+            Vector3 direction = GetDirection(target, _player.transform.position, maxSpeed*Time.deltaTime);
             rigBod.velocity = rigBod.position + direction;
         }
     }
@@ -117,6 +139,21 @@ public class TentacleBehavior : MonoBehaviour
                 rigBod.isKinematic = true;
                 state = TentacleState.holding;
             }
+        }
+    }
+
+    Vector3 GetDirection(Vector3 target, Vector3 position, float Magnitude)
+    {
+        Vector3 direction = target - position;
+        if (Magnitude == 0)
+        {
+            return direction;
+        }
+        else
+        {
+            direction.Normalize();
+            direction *= Magnitude;
+            return direction;
         }
     }
 }

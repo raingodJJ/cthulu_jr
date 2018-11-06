@@ -765,14 +765,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: babe2362a427f7b4c879a71b1f13854c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxRange: 7
+  maxRange: 10
+  minRange: 1
   maxSpeed: 20
   player: {fileID: 359227356}
   state: 0
   target: {x: 0, y: 0, z: 0}
   holding: {fileID: 0}
-  grabDuration: 44
-  cooldown: 30
+  grabDuration: 60
+  cooldown: 45
 --- !u!54 &1207662057
 Rigidbody:
   m_ObjectHideFlags: 0

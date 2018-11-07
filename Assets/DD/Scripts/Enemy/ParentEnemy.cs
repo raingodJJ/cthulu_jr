@@ -2,22 +2,35 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ParentEnemy : MonoBehaviour {
-
-
-    public float hitsRemain = 3f;
-
-    public float speed = 1f;
-
-    public int damage = 5;
-
-    public float meleeRange = 1f;
+public class ParentEnemy : MonoBehaviour
+{
 
     public GameObject player;
 
-    public float MinDist = 0f;
+    public TentacleState state;
+
+    public bool Aware = false;
+
+    double distToGround;
+
+    //test
+
+    [Header("Set in Inspector: Enemy")]
+
+    public float hitsRemain = 3f;
+
+    public float movement = 5f;
+
+    public int maxDamage = 1;
+
+    public float meleeRange = 1f;
+
+
+    public float MinDist = 1.5f;
 
     public float MaxDist = 0f;
+
+    public float DetectionRange = 0f;
 
     public float attackRate = 1f;
 
@@ -26,49 +39,90 @@ public class ParentEnemy : MonoBehaviour {
     private bool attacking = false;
 
 
+    [Header("Set Dynamically: Enemy")]
 
-	// Use this for initialization
-	void Start () {
+    public float health;
 
-        player = GameObject.FindGameObjectWithTag("player");
+    public float speed;
+
+    public int damage;
+
+    public bool invincible = false;
+
+    public bool knockback = false;
+
+
+
+    protected virtual void Awake()
+    {
+        health = hitsRemain;
+        speed = movement;
+        damage = maxDamage;
     }
 
- 
+    // Use this for initialization
+    void Start()
+    {
+
+        player = GameObject.FindGameObjectWithTag("player");
+
+        distToGround = this.GetComponent<Collider>().bounds.extents.y;
+    }
+
+
+
+    bool IsGrounded()
+    {
+        return Physics.Raycast(transform.position, -Vector3.up, (float)(distToGround + 0.1));
+    }
+
 
     // Update is called once per frame
-    void Update() {
+    void Update()
+    {
         /*
          * if (hitsRemain <= 0)
          * {
          *  Die();
          * }
          */
+        if (Vector3.Distance(transform.position, player.transform.position) <= DetectionRange)
+        {
+            Aware = true;
+        }
 
-
-        transform.LookAt(player.transform);
-
-        if (Vector3.Distance(transform.position, player.transform.position) >= MinDist)
+        if (state != TentacleState.grabbing && IsGrounded() && Aware)
         {
 
-            transform.position += transform.forward * speed * Time.deltaTime;
 
+            transform.LookAt(player.transform);
 
-            if (Vector3.Distance(transform.position, player.transform.position) <= MaxDist)
+            if (Vector3.Distance(transform.position, player.transform.position) >= MinDist)
             {
-                Invoke("DealDamage", 1f);                
+
+                transform.position += transform.forward * speed * Time.deltaTime;
+
+
+                if (Vector3.Distance(transform.position, player.transform.position) <= MaxDist)
+                {
+                    Invoke("DealDamage", 1f);
+                }
+
             }
 
         }
+
+
     }
 
     void DealDamage()
     {
-        if(attacking)
+        if (attacking)
         {
             return;
         }
         attacking = true;
-        if(Vector3.Distance(transform.position, player.transform.position) >= meleeRange)
+        if (Vector3.Distance(transform.position, player.transform.position) >= meleeRange)
         {
             //run hit animation
             return;
@@ -82,11 +136,11 @@ public class ParentEnemy : MonoBehaviour {
     }
 
     /*
-     * void Die(); 
-     * {
-     *  Ragdoll
-     *  Stop all other functions
-     *  After x seconds, despawn
-     * }
-     */
+        * void Die(); 
+        * {
+        *  Ragdoll
+        *  Stop all other functions
+        *  After x seconds, despawn
+        * }
+        */
 }

@@ -10,6 +10,12 @@ public enum TentacleState
     throwing,
     cooldown
 }
+public enum Weapon
+{
+    crowbar,
+    pistol,
+    shotgun
+}
 
 [RequireComponent(typeof(CharacterController))]
 public class Character_Direct : MonoBehaviour
@@ -21,6 +27,7 @@ public class Character_Direct : MonoBehaviour
     public string horizontalThumbstick = "Horizontal_Thumbstick";
     public string verticalThumbstick = "Vertical_Thumbstick";
     public string attackAxis = "Fire1";
+    public string weaponAxis = "Fire2";
 
     [Header("Movement Properties")]
     public float speed = 10f;
@@ -29,6 +36,7 @@ public class Character_Direct : MonoBehaviour
     public float angularSpeed = 5f;
     public Camera MainCamera;
     public Vector3 _aim;
+    public Weapon weapon = global::Weapon.crowbar;
 
     [Header("Tentacle Properties")]
     public Transform tentaclePoint;
@@ -68,6 +76,7 @@ public class Character_Direct : MonoBehaviour
             Aim();
         }
         Tentacle(tentacleState);
+        Weapon(weapon);
         _characterController.Move(_characterVelocity * Time.deltaTime);
 	}
 
@@ -95,6 +104,25 @@ public class Character_Direct : MonoBehaviour
             // Calculate the hit point on the plane and set the look at of the character transform
             _aim = screenRay.GetPoint(intersection);
             this.transform.LookAt(_aim);
+        }
+    }
+
+    private void Weapon(Weapon currentWeapon)
+    {
+        if (Input.GetAxis(weaponAxis) > 0.5f)
+        {
+            if (currentWeapon == global::Weapon.crowbar)
+            {
+                //Do damage in a cone in front of player
+            }
+            if (currentWeapon == global::Weapon.pistol)
+            {
+                //Spawn one bullet in direction of aim
+            }
+            if (currentWeapon == global::Weapon.shotgun)
+            {
+                //Spawn seven bullets centering in direction of aim
+            }
         }
     }
 

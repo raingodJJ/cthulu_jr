@@ -6,6 +6,7 @@ TagManager:
   tags:
   - Moveable
   - player
+  - Enemy
   layers:
   - Default
   - TransparentFX

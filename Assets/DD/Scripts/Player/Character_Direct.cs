@@ -51,6 +51,9 @@ public class Character_Direct : MonoBehaviour
 
     private bool _canMove = true;
     private bool _canAim = true;
+    private bool _canTakeDamage = true;
+    private int invWindow = 50;
+    public int HitPoints = 3;
 
     private Plane _groundPlane;
 
@@ -62,22 +65,38 @@ public class Character_Direct : MonoBehaviour
 	}
 	
 	// Update is called once per frame
-	void Update () {
-		if (_canMove)
+	void Update ()
+    {
+        if (HitPoints > 0)
         {
-            Move();
+            if (_canMove)
+            {
+                Move();
+            }
+            else
+            {
+                _characterVelocity = Vector3.zero;
+            }
+            if (_canAim)
+            {
+                Aim();
+            }
+            if (!_canTakeDamage)
+            {
+                if (invWindow > 0)
+                {
+                    invWindow--;
+                }
+                else
+                {
+                    invWindow = 50;
+                    _canTakeDamage = true;
+                }
+            }
+            Tentacle(tentacleState);
+            Weapon(weapon);
+            _characterController.Move(_characterVelocity * Time.deltaTime);
         }
-        else
-        {
-            _characterVelocity = Vector3.zero;
-        }
-        if (_canAim)
-        {
-            Aim();
-        }
-        Tentacle(tentacleState);
-        Weapon(weapon);
-        _characterController.Move(_characterVelocity * Time.deltaTime);
 	}
 
     private void Move()
@@ -158,5 +177,30 @@ public class Character_Direct : MonoBehaviour
             }
         }
         this.tentacleState = _tentacle.state;
+    }
+
+    void OnCollisionEnter(Collision collision)
+    {
+        if (collision.gameObject.tag == "Enemy")
+        {
+            if (_canTakeDamage)
+            {
+                ParentEnemy enemy = collision.gameObject.GetComponent<ParentEnemy>();
+                if (enemy.isGrabbed == false)
+                {
+                    HitPoints--;
+                    if (HitPoints < 0)
+                    {
+                        _canMove = false;
+                        _canAim = false;
+                    }
+                    _canTakeDamage = false;
+                }        
+            }
+        }
+        if (collision.gameObject.tag == "player")
+        {
+            Physics.IgnoreCollision(collision.collider, this.GetComponent<Collider>());
+        }
     }
 }

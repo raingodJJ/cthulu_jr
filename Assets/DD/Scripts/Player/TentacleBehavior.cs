@@ -66,7 +66,7 @@ public class TentacleBehavior : MonoBehaviour
             else if (Vector3.Distance(target, _player.tentaclePoint.transform.position) < 1)
             {
                 //Min Range 1
-                Vector3 direction = GetDirection(target, _player.tentaclePoint.transform.position, 1);
+                Vector3 direction = GetDirection(target, _player.tentaclePoint.transform.position, 3);
                 target = _player.tentaclePoint.transform.position + direction;
             }
             velocity = GetDirection(target, this.transform.position, maxSpeed);
@@ -105,9 +105,10 @@ public class TentacleBehavior : MonoBehaviour
             target = _player._aim;
             if (Vector3.Distance(target, _player.tentaclePoint.transform.position) > maxRange)
             {
-                Vector3 direction = target - _player.tentaclePoint.transform.position;
-                direction.Normalize();
-                direction *= maxRange;
+                Vector3 direction = GetDirection(target, _player.tentaclePoint.transform.position, maxRange);
+                //Vector3 direction = target - _player.tentaclePoint.transform.position;
+                //direction.Normalize();
+                //direction *= maxRange;
                 target = _player.tentaclePoint.transform.position + direction;
             }
             else if (Vector3.Distance(target, _player.tentaclePoint.transform.position) < minRange)
@@ -123,8 +124,13 @@ public class TentacleBehavior : MonoBehaviour
             target = _player._aim;
             Rigidbody rigBod = holding.GetComponent<Rigidbody>();
             rigBod.isKinematic = false;
-            Vector3 direction = GetDirection(target, _player.transform.position, maxSpeed*Time.deltaTime);
-            rigBod.velocity = rigBod.position + direction;
+            Vector3 direction = GetDirection(target, _player.transform.position, maxSpeed);
+            rigBod.velocity = direction;
+            if (holding.tag == "Enemy")
+            {
+                ParentEnemy enemy = holding.GetComponent<ParentEnemy>();
+                enemy.isGrabbed = false;
+            }
         }
     }
 
@@ -132,12 +138,17 @@ public class TentacleBehavior : MonoBehaviour
     {
         if (state == TentacleState.grabbing)
         {
-            if (collision.gameObject.tag == "Moveable")
+            if (collision.gameObject.tag == "Moveable" || collision.gameObject.tag == "Enemy")
             {
                 holding = collision.gameObject;
                 Rigidbody rigBod = holding.GetComponent<Rigidbody>();
                 rigBod.isKinematic = true;
                 state = TentacleState.holding;
+            }
+            if (holding.tag == "Enemy")
+            {
+                ParentEnemy enemy = holding.GetComponent<ParentEnemy>();
+                enemy.isGrabbed = true;
             }
         }
     }

@@ -63,10 +63,10 @@ public class TentacleBehavior : MonoBehaviour
                 target = _player.tentaclePoint.transform.position + direction;
             }
             //If to close
-            else if (Vector3.Distance(target, _player.tentaclePoint.transform.position) < 1)
+            else if (Vector3.Distance(target, _player.tentaclePoint.transform.position) < 2)
             {
                 //Min Range 1
-                Vector3 direction = GetDirection(target, _player.tentaclePoint.transform.position, 3);
+                Vector3 direction = GetDirection(target, _player.tentaclePoint.transform.position, 2);
                 target = _player.tentaclePoint.transform.position + direction;
             }
             velocity = GetDirection(target, this.transform.position, maxSpeed);
@@ -74,7 +74,7 @@ public class TentacleBehavior : MonoBehaviour
             pos.x = transform.position.x + velocity.x * Time.deltaTime*1;
             pos.y = transform.position.y;
             pos.z = transform.position.z + velocity.z * Time.deltaTime*1;
-            transform.position = pos;
+            transform.position = target;
             holding.transform.position = this.transform.position;
         }
         else if (state == TentacleState.throwing)
@@ -124,6 +124,7 @@ public class TentacleBehavior : MonoBehaviour
             target = _player._aim;
             Rigidbody rigBod = holding.GetComponent<Rigidbody>();
             rigBod.isKinematic = false;
+            holding.layer = 0;
             Vector3 direction = GetDirection(target, _player.transform.position, maxSpeed);
             rigBod.velocity = direction;
             if (holding.tag == "Enemy")
@@ -143,6 +144,7 @@ public class TentacleBehavior : MonoBehaviour
                 holding = collision.gameObject;
                 Rigidbody rigBod = holding.GetComponent<Rigidbody>();
                 rigBod.isKinematic = true;
+                holding.layer = 9;
                 state = TentacleState.holding;
             }
             if (holding.tag == "Enemy")

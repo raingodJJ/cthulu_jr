@@ -107,6 +107,10 @@ public class Character_Direct : MonoBehaviour
         direction.z = Input.GetAxis(verticalAxis);
 
         _characterVelocity = direction * speed;
+        if (direction == Vector3.zero)
+        {
+            _characterVelocity = Vector3.zero;
+        }
     }
 
     private void Aim()
@@ -168,12 +172,12 @@ public class Character_Direct : MonoBehaviour
         {
             if (Input.GetAxis(attackAxis) > 0.5f)
             {
-                _tentacle.Invoke("Fire", 0.0f);
+                _canMove = true;
+                _canAim = true;
             }
             else
             {
-                _canMove = true;
-                _canAim = true;
+                _tentacle.Invoke("Fire", 0.0f);
             }
         }
         this.tentacleState = _tentacle.state;
@@ -197,10 +201,6 @@ public class Character_Direct : MonoBehaviour
                     _canTakeDamage = false;
                 }        
             }
-        }
-        if (collision.gameObject.tag == "player")
-        {
-            Physics.IgnoreCollision(collision.collider, this.GetComponent<Collider>());
         }
     }
 }

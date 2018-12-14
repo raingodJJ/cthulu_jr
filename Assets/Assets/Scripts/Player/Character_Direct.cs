@@ -1,6 +1,8 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
+
 
 public enum TentacleState
 {
@@ -54,6 +56,7 @@ public class Character_Direct : MonoBehaviour
     private bool _canTakeDamage = true;
     private int invWindow = 50;
     public int HitPoints = 3;
+    public RectTransform healthBar;
 
     private Plane _groundPlane;
 
@@ -67,6 +70,8 @@ public class Character_Direct : MonoBehaviour
 	// Update is called once per frame
 	void Update ()
     {
+        healthBar.sizeDelta = new Vector2(HitPoints, healthBar.sizeDelta.y);
+
         if (HitPoints > 0)
         {
             if (_canMove)
@@ -202,9 +207,13 @@ public class Character_Direct : MonoBehaviour
                 }        
             }
 
-            if (collision.gameObject.tag == "Bullet")
+            
+        }
+        if (collision.gameObject.tag == "Bullet")
+        {
+            if (_canTakeDamage)
             {
-                HitPoints --;
+                HitPoints--;
                 Destroy(collision.rigidbody);
                 {
                     _canMove = false;

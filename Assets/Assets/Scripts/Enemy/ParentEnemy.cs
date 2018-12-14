@@ -17,20 +17,19 @@ public class ParentEnemy : MonoBehaviour
 
     [Header("Set in Inspector: Enemy")]
 
-    public float hitsRemain = 3f;
+    public float health = 3f;
 
-    public float movement = 5f;
+    public float speed = 5f;
 
-    public int maxDamage = 1;
+    public int damage = 1;
 
     public float meleeRange = 1f;
-
 
     public float MinDist = 1.5f;
 
     public float MaxDist = 0f;
 
-    public float DetectionRange = 0f;
+    public float DetectionRange = 5f;
 
     public float attackRate = 1f;
 
@@ -42,29 +41,12 @@ public class ParentEnemy : MonoBehaviour
 
     private bool _canTakeDamage;
 
-
-    [Header("Set Dynamically: Enemy")]
-
-    public float health;
-
-    public float speed;
-
-    public int damage;
-
     public bool invincible = false;
 
     public bool knockback = false;
 
     private int invWindow = 50;
 
-
-
-    protected virtual void Awake()
-    {
-        health = hitsRemain;
-        speed = movement;
-        damage = maxDamage;
-    }
 
     // Use this for initialization
     void Start()

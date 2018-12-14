@@ -201,6 +201,17 @@ public class Character_Direct : MonoBehaviour
                     _canTakeDamage = false;
                 }        
             }
+
+            if (collision.gameObject.tag == "Bullet")
+            {
+                HitPoints --;
+                Destroy(collision.rigidbody);
+                {
+                    _canMove = false;
+                    _canAim = false;
+                }
+                _canTakeDamage = false;
+            }
         }
     }
 }

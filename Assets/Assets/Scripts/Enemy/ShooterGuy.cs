@@ -19,19 +19,19 @@ public class ShooterGuy : MonoBehaviour
 
     [Header("Set in Inspector: Enemy")]
 
-    public float hitsRemain = 3f;
+    public float health = 3f;
 
-    public float movement = 5f;
+    public float speed = 5f;
 
-    public int maxDamage = 1;
+    public int damage = 1;
 
     public float meleeRange = 1f;
 
-    public float MinDist = 1.5f;
+    public float MinDist = 10f;
 
-    public float MaxDist = 0f;
+    public float MaxDist = 100f;
 
-    public float DetectionRange = 0f;
+    public float DetectionRange = 10f;
 
     public float attackRate = 1f;
 
@@ -45,15 +45,6 @@ public class ShooterGuy : MonoBehaviour
 
     public float bulletSpeed = 20.0f;
 
-
-    [Header("Set Dynamically: Enemy")]
-
-    public float health;
-
-    public float speed;
-
-    public int damage;
-
     public bool invincible = false;
 
     public bool knockback = false;
@@ -62,16 +53,6 @@ public class ShooterGuy : MonoBehaviour
 
     private float nextFire = 0;
 
-
-
-
-
-    protected virtual void Awake()
-    {
-        health = hitsRemain;
-        speed = movement;
-        damage = maxDamage;
-    }
 
     // Use this for initialization
     void Start()
@@ -111,7 +92,7 @@ public class ShooterGuy : MonoBehaviour
                 transform.position += transform.forward * speed * Time.deltaTime;
 
 
-                if (Vector3.Distance(transform.position, player.transform.position) <= MaxDist)
+                if ((Vector3.Distance(transform.position, player.transform.position) <= MaxDist))
                 {
                     Invoke("Shoot", 1f);
                 }

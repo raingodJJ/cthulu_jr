@@ -45,7 +45,7 @@ public class ParentEnemy : MonoBehaviour
 
     public bool knockback = false;
 
-    private int invWindow = 50;
+    private int invWindow = 100;
 
 
     // Use this for initialization
@@ -108,7 +108,7 @@ public class ParentEnemy : MonoBehaviour
             }
             else
             {
-                invWindow = 50;
+                invWindow = 100;
                 _canTakeDamage = true;
             }
         }
@@ -146,12 +146,18 @@ public class ParentEnemy : MonoBehaviour
     {
         if (collision.gameObject.tag == "Moveable")
         {
-            if (!isGrabbed)
+            if (collision.gameObject.layer != 9)
             {
-                if (_canTakeDamage)
+                if (collision.gameObject.GetComponent<Rigidbody>().velocity.magnitude > 1)
                 {
-                    health--;
-                    _canTakeDamage = false;
+                    if (!isGrabbed)
+                    {
+                        if (_canTakeDamage)
+                        {
+                            health--;
+                            _canTakeDamage = false;
+                        }
+                    }
                 }
             }
         }

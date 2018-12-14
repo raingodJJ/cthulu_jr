@@ -34,16 +34,16 @@ public class TentacleBehavior : MonoBehaviour
             {
                 velocity = GetDirection(target, transform.position, 0);
                 Vector3 pos;
-                pos.x = transform.position.x + velocity.x * Time.deltaTime * 11;
+                pos.x = transform.position.x + velocity.x * Time.deltaTime * 13;
                 pos.y = transform.position.y;
-                pos.z = transform.position.z + velocity.z * Time.deltaTime * 11;
+                pos.z = transform.position.z + velocity.z * Time.deltaTime * 13;
                 transform.position = pos;
                 grabCounter++;
                 if (grabCounter == grabDuration)
                 {
                     transform.position = _player.tentaclePoint.transform.position;
                     grabCounter = 0;
-                    state = TentacleState.idle;
+                    state = TentacleState.cooldown;
                 }
             }
             else if (grabCounter == grabDuration / 2)

@@ -185,6 +185,11 @@ public class Character_Direct : MonoBehaviour
                 _tentacle.Invoke("Fire", 0.0f);
             }
         }
+        else if (state == TentacleState.cooldown)
+        {
+            _canMove = true;
+            _canAim = true;
+        }
         this.tentacleState = _tentacle.state;
     }
 

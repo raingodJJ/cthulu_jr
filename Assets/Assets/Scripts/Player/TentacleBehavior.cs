@@ -132,6 +132,14 @@ public class TentacleBehavior : MonoBehaviour
                 ParentEnemy enemy = holding.GetComponent<ParentEnemy>();
                 enemy.isGrabbed = false;
             }
+            else
+            {
+                rigBod.mass -= .01f;
+                if (rigBod.mass < .98)
+                {
+                    Destroy(holding, 1);
+                }
+            }
         }
     }
 

@@ -31,7 +31,7 @@ public class ShooterGuy : MonoBehaviour
 
     public float MaxDist = 100f;
 
-    public float DetectionRange = 10f;
+    public float DetectionRange = 15f;
 
     public float attackRate = 1f;
 
@@ -57,9 +57,6 @@ public class ShooterGuy : MonoBehaviour
     // Use this for initialization
     void Start()
     {
-
-        player = GameObject.FindGameObjectWithTag("player");
-
         distToGround = this.GetComponent<Collider>().bounds.extents.y;
     }
 
@@ -80,7 +77,7 @@ public class ShooterGuy : MonoBehaviour
             Aware = true;
         }
 
-        if (state != TentacleState.grabbing && IsGrounded() && Aware)
+        if (state != TentacleState.grabbing && Aware)
         {
 
 
@@ -140,12 +137,18 @@ public class ShooterGuy : MonoBehaviour
     {
         if (collision.gameObject.tag == "Moveable")
         {
-            if (!isGrabbed)
+            if (collision.gameObject.layer != 9)
             {
-                if (_canTakeDamage)
+                if (collision.gameObject.GetComponent<Rigidbody>().velocity.magnitude > 1)
                 {
-                    health--;
-                    _canTakeDamage = false;
+                    if (!isGrabbed)
+                    {
+                        if (_canTakeDamage)
+                        {
+                            health--;
+                            _canTakeDamage = false;
+                        }
+                    }
                 }
             }
         }

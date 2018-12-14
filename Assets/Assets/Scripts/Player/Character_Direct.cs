@@ -54,7 +54,7 @@ public class Character_Direct : MonoBehaviour
     private bool _canMove = true;
     private bool _canAim = true;
     private bool _canTakeDamage = true;
-    private int invWindow = 50;
+    private int invWindow = 100;
     public int HitPoints = 3;
     public RectTransform healthBar;
 
@@ -91,10 +91,14 @@ public class Character_Direct : MonoBehaviour
                 if (invWindow > 0)
                 {
                     invWindow--;
+                    if (invWindow == 50)
+                    {
+                        _canMove = true;
+                    }
                 }
                 else
                 {
-                    invWindow = 50;
+                    invWindow = 100;
                     _canTakeDamage = true;
                 }
             }
@@ -208,6 +212,9 @@ public class Character_Direct : MonoBehaviour
                         _canMove = false;
                         _canAim = false;
                     }
+                    _canMove = false;
+                    Vector3 direction = transform.position - collision.transform.position;
+                    transform.position = transform.position + direction;
                     _canTakeDamage = false;
                 }        
             }
@@ -224,6 +231,9 @@ public class Character_Direct : MonoBehaviour
                     _canMove = false;
                     _canAim = false;
                 }
+                _canMove = false;
+                Vector3 direction = transform.position - collision.transform.position;
+                transform.position = transform.position + direction;
                 _canTakeDamage = false;
             }
         }

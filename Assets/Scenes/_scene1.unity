@@ -19318,7 +19318,7 @@ Prefab:
     m_Modifications:
     - target: {fileID: 4200792896744374, guid: 83d8808b9c74e224f80edc7c1f7900f5, type: 2}
       propertyPath: m_LocalPosition.x
-      value: 11.851
+      value: 10.76
       objectReference: {fileID: 0}
     - target: {fileID: 4200792896744374, guid: 83d8808b9c74e224f80edc7c1f7900f5, type: 2}
       propertyPath: m_LocalPosition.y
@@ -19347,6 +19347,16 @@ Prefab:
     - target: {fileID: 4200792896744374, guid: 83d8808b9c74e224f80edc7c1f7900f5, type: 2}
       propertyPath: m_RootOrder
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 114784421467115888, guid: 83d8808b9c74e224f80edc7c1f7900f5,
+        type: 2}
+      propertyPath: DetectionRange
+      value: 15
+      objectReference: {fileID: 0}
+    - target: {fileID: 114784421467115888, guid: 83d8808b9c74e224f80edc7c1f7900f5,
+        type: 2}
+      propertyPath: MaxDist
+      value: 100
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 83d8808b9c74e224f80edc7c1f7900f5, type: 2}
@@ -28294,6 +28304,11 @@ Prefab:
       propertyPath: player
       value: 
       objectReference: {fileID: 422513689}
+    - target: {fileID: 114617483326401000, guid: 8506e910ffe17064cac9f09c8f4a31c0,
+        type: 2}
+      propertyPath: DetectionRange
+      value: 15
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 8506e910ffe17064cac9f09c8f4a31c0, type: 2}
   m_IsPrefabAsset: 0
@@ -28983,7 +28998,7 @@ Mesh:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
-  m_Name: pb_Mesh24992
+  m_Name: pb_Mesh7608
   serializedVersion: 9
   m_SubMeshes:
   - serializedVersion: 2

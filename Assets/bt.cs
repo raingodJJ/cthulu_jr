@@ -11,5 +11,10 @@ public class bt : MonoBehaviour {
         SceneManager.LoadScene(1);
     }
 
+    public void QuitGame ()
+    {
+        Debug.Log("QUIT!");
+        Application.Quit(); 
+    }
 }
 	

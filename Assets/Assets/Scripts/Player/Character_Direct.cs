@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 
 public enum TentacleState
@@ -14,8 +15,8 @@ public enum TentacleState
 }
 public enum Weapon
 {
-    crowbar,
-    pistol,
+    none,
+    revolver,
     shotgun
 }
 
@@ -38,7 +39,9 @@ public class Character_Direct : MonoBehaviour
     public float angularSpeed = 5f;
     public Camera MainCamera;
     public Vector3 _aim;
-    public Weapon weapon = global::Weapon.crowbar;
+    public Weapon weapon = global::Weapon.none;
+    public Rigidbody projectile;
+    private float bulletSpeed = 20;
 
     [Header("Tentacle Properties")]
     public Transform tentaclePoint;
@@ -57,6 +60,9 @@ public class Character_Direct : MonoBehaviour
     private int invWindow = 100;
     public int HitPoints = 3;
     public RectTransform healthBar;
+    private float nextFire;
+    public float attackRate = 2f;
+    private float respawnDelay = 0f;
 
     private Plane _groundPlane;
 
@@ -106,6 +112,13 @@ public class Character_Direct : MonoBehaviour
             Weapon(weapon);
             _characterController.Move(_characterVelocity * Time.deltaTime);
         }
+        else
+        {
+            if (respawnDelay < Time.time)
+            {
+                SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+            }
+        }
 	}
 
     private void Move()
@@ -143,17 +156,32 @@ public class Character_Direct : MonoBehaviour
     {
         if (Input.GetAxis(weaponAxis) > 0.5f)
         {
-            if (currentWeapon == global::Weapon.crowbar)
+            if (currentWeapon == global::Weapon.revolver)
             {
-                //Do damage in a cone in front of player
-            }
-            if (currentWeapon == global::Weapon.pistol)
-            {
-                //Spawn one bullet in direction of aim
+                if (Time.time > nextFire)
+                {
+                    nextFire = Time.time + attackRate;
+
+                    Rigidbody bullet = (Rigidbody)Instantiate(projectile, transform.position + transform.forward, transform.rotation);
+                    bullet.AddForce(transform.forward * bulletSpeed, ForceMode.Impulse);
+
+                    Destroy(bullet.gameObject, 2);
+                }
             }
             if (currentWeapon == global::Weapon.shotgun)
             {
-                //Spawn seven bullets centering in direction of aim
+                if (Time.time > nextFire)
+                {
+                    nextFire = Time.time + attackRate;
+
+                    Rigidbody bullet = (Rigidbody)Instantiate(projectile, transform.position + transform.forward, transform.rotation);
+                    bullet.AddForce(transform.forward * bulletSpeed, ForceMode.Impulse);
+                    Destroy(bullet.gameObject, 2);
+
+                    bullet = (Rigidbody)Instantiate(projectile, transform.position + transform.forward, transform.rotation);
+                    bullet.AddForce(transform.forward * bulletSpeed, ForceMode.Impulse);
+                    Destroy(bullet.gameObject, 2);
+                }
             }
         }
     }
@@ -211,6 +239,7 @@ public class Character_Direct : MonoBehaviour
                     {
                         _canMove = false;
                         _canAim = false;
+                        respawnDelay = Time.time + 5;
                     }
                     _canMove = false;
                     Vector3 direction = transform.position - collision.transform.position;
@@ -218,10 +247,8 @@ public class Character_Direct : MonoBehaviour
                     _canTakeDamage = false;
                 }        
             }
-
-            
         }
-        if (collision.gameObject.tag == "Bullet")
+        else if (collision.gameObject.tag == "Bullet")
         {
             if (_canTakeDamage)
             {
@@ -230,12 +257,27 @@ public class Character_Direct : MonoBehaviour
                 {
                     _canMove = false;
                     _canAim = false;
+                    respawnDelay = Time.time + 5;
                 }
                 _canMove = false;
                 Vector3 direction = transform.position - collision.transform.position;
                 transform.position = transform.position + direction;
                 _canTakeDamage = false;
             }
+        }
+        else if (collision.gameObject.tag == "Revolver")
+        {
+            weapon = global::Weapon.revolver;
+            Destroy(collision.gameObject);
+        }
+        else if (collision.gameObject.tag == "Shotgun")
+        {
+            weapon = global::Weapon.shotgun;
+            Destroy(collision.gameObject);
+        }
+        else if (collision.gameObject.tag == "Exit")
+        {
+            Destroy(this.gameObject);
         }
     }
 }

@@ -18,6 +18,8 @@ public class TentacleBehavior : MonoBehaviour
     private int cooldownCounter = 0;
     public int cooldown;
     private int throwDelayCounter = 0;
+    public bool inWall = false;
+    private Vector3 lastPosition;
 
     // Use this for initialization
     void Start()
@@ -69,13 +71,17 @@ public class TentacleBehavior : MonoBehaviour
                 Vector3 direction = GetDirection(target, _player.tentaclePoint.transform.position, 2);
                 target = _player.tentaclePoint.transform.position + direction;
             }
-            velocity = GetDirection(target, this.transform.position, maxSpeed);
-            Vector3 pos;
-            pos.x = transform.position.x + velocity.x * Time.deltaTime*1;
-            pos.y = transform.position.y;
-            pos.z = transform.position.z + velocity.z * Time.deltaTime*1;
-            transform.position = target;
-            holding.transform.position = this.transform.position;
+            if (!inWall)
+            {
+                lastPosition = transform.position;
+                transform.position = target;
+                holding.transform.position = this.transform.position;
+            }
+            else
+            {
+                transform.position = lastPosition;
+                inWall = false;
+            }
         }
         else if (state == TentacleState.throwing)
         {
@@ -159,6 +165,13 @@ public class TentacleBehavior : MonoBehaviour
             {
                 ParentEnemy enemy = holding.GetComponent<ParentEnemy>();
                 enemy.isGrabbed = true;
+            }
+        }
+        if (state == TentacleState.holding)
+        {
+            if (collision.gameObject.tag == "Wall")
+            {
+                inWall = true;
             }
         }
     }

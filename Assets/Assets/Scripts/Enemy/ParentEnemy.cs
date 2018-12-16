@@ -55,6 +55,8 @@ public class ParentEnemy : MonoBehaviour
         player = GameObject.FindGameObjectWithTag("player");
 
         distToGround = this.GetComponent<Collider>().bounds.extents.y;
+
+        health *= 2;
     }
 
 
@@ -113,7 +115,7 @@ public class ParentEnemy : MonoBehaviour
             }
         }
 
-        if (health == 0)
+        if (health < 0)
         {
             if (gameObject != null)
             {
@@ -148,18 +150,26 @@ public class ParentEnemy : MonoBehaviour
         {
             if (collision.gameObject.layer != 9)
             {
-                if (collision.gameObject.GetComponent<Rigidbody>().velocity.magnitude > 1)
+                if (collision.gameObject.GetComponent<Rigidbody>().velocity.magnitude > 2)
                 {
                     if (!isGrabbed)
                     {
                         if (_canTakeDamage)
                         {
                             health--;
-                            _canTakeDamage = false;
+                            _canTakeDamage = false;             
                         }
                     }
                 }
             }
+        }
+        if (collision.gameObject.tag == "Bullet")
+        {
+            if (_canTakeDamage)
+            {
+                health -= 2;
+            }
+            Destroy(collision.gameObject);
         }
     }
 

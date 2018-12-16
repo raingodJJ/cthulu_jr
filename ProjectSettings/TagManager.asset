@@ -8,6 +8,10 @@ TagManager:
   - player
   - Enemy
   - Bullet
+  - Wall
+  - Revolver
+  - Shotgun
+  - Exit
   layers:
   - Default
   - TransparentFX
